@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import CartContext from "../../context/cart-context";
+import { Link } from "react-router-dom";
 
 const Nav = () => {
   const ctx = useContext(CartContext);
@@ -16,10 +17,14 @@ const Nav = () => {
         <h2 className="ml-4 mr-10 font-bold text-2xl">
           BUR<span className="text-amber-700">GIR</span>
         </h2>
-        <button className="font-semibold cursor-pointer hover:text-amber-700">
-          Home
-        </button>
-        <button className="px-6  font-semibold cursor-pointer">Menu</button>
+        <Link to="/">
+          <button className="font-semibold cursor-pointer hover:text-amber-700">
+            Home
+          </button>
+        </Link>
+        <Link to="/menu">
+          <button className="px-6  font-semibold cursor-pointer">Menu</button>
+        </Link>
         <button className=" font-semibold">Service</button>
       </div>
       <button className="flex items-center justify-center h-[3rem] w-[3rem]">

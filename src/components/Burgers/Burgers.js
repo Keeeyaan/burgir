@@ -4,7 +4,7 @@ import Wrapper from "../UI/Wrapper";
 
 const Burgers = () => {
   return (
-    <Wrapper className="flex justify-center">
+    <Wrapper className="flex justify-center mb-[5rem]">
       <BurgerList />
     </Wrapper>
   );
