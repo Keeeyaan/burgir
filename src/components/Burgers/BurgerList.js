@@ -1,73 +1,71 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import BurgerItem from "./BurgerItem";
 
 const BurgerList = () => {
-  const burger = [
-    {
-      id: "b1",
-      name: "Chicken Burger",
-      img: "/images/chickenBurger.svg",
-      description: "200 gr chicken + cheese  Lettuce + tomato",
-      price: 22,
-    },
-    {
-      id: "b2",
-      name: "Cheese Burger",
-      img: "/images/cheeseBurger.svg",
-      description: "200 gr meat + Lettuce cheese + onion + tomato ",
-      price: 25,
-    },
-    {
-      id: "b3",
-      name: "Double Burger",
-      img: "/images/doublePatty.svg",
-      description: "200 gr meat + Lettuce cheese + onion + tomato ",
-      price: 25,
-    },
-    {
-      id: "b4",
-      name: "Chili Cheese Burger",
-      img: "/images/chickenBurger.svg",
-      description: "200 gr meat + Lettuce cheese + onion + tomato ",
-      price: 25,
-    },
-    {
-      id: "b5",
-      name: "BBQ Cheese Burger",
-      img: "/images/cheeseBurger.svg",
-      description: "200 gr meat + Lettuce cheese + onion + tomato ",
-      price: 25,
-    },
-    {
-      id: "b6",
-      name: "Pastrami Burger",
-      img: "/images/doublePatty.svg",
-      description: "200 gr meat + Lettuce cheese + onion + tomato ",
-      price: 25,
-    },
-    {
-      id: "b7",
-      name: "SIX SIX ONE",
-      img: "/images/chickenBurger.svg",
-      description: "200 gr meat + Lettuce cheese + onion + tomato ",
-      price: 25,
-    },
-  ];
+  const [burgers, setBugers] = useState([]);
+  const [isError, setIsError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  return (
-    <ul className="grid grid-cols-4 gap-[2.5rem]">
-      {burger.map((burger) => (
-        <BurgerItem
-          key={burger.id}
-          id={burger.id}
-          img={burger.img}
-          name={burger.name}
-          description={burger.description}
-          price={burger.price}
-        />
-      ))}
-    </ul>
-  );
+  const fetchBurgersHandler = useCallback(async () => {
+    setIsLoading(true);
+    setIsError(null);
+
+    try {
+      const res = await fetch(
+        "https://react-http-b07c9-default-rtdb.firebaseio.com/burgers.json"
+      );
+      if (!res.ok) {
+        throw new Error("Something went wrong!");
+      }
+
+      const data = await res.json();
+
+      const loadedBugers = [];
+
+      for (const key in data) {
+        loadedBugers.push({
+          id: key,
+          name: data[key].name,
+          description: data[key].description,
+          img: data[key].img,
+          price: data[key].price,
+        });
+      }
+      setBugers(loadedBugers);
+    } catch (error) {
+      setIsError(error.message);
+    }
+    setIsLoading(false);
+  }, []);
+
+  useEffect(() => {
+    fetchBurgersHandler();
+  }, [fetchBurgersHandler]);
+
+  let content = <p>No burgers available.</p>;
+
+  if (burgers.length > 0) {
+    content = burgers.map((burger) => (
+      <BurgerItem
+        key={burger.id}
+        id={burger.id}
+        img={burger.img}
+        name={burger.name}
+        description={burger.description}
+        price={burger.price}
+      />
+    ));
+  }
+
+  if (isError) {
+    content = <p className="text-center ">{isError}</p>;
+  }
+
+  if (isLoading) {
+    content = <p className="text-center">Loading...</p>;
+  }
+
+  return <ul className="grid grid-cols-4 gap-[2.5rem]">{content}</ul>;
 };
 
 export default BurgerList;
