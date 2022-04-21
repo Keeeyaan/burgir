@@ -12,7 +12,7 @@ const BurgerList = () => {
 
     try {
       const res = await fetch(
-        "https://react-http-b07c9-default-rtdb.firebaseio.com/burgers.json"
+        `${FIREBASE_URL}/json`
       );
       if (!res.ok) {
         throw new Error("Something went wrong!");
